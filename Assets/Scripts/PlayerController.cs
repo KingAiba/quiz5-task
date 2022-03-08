@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Vector3 gridPos = new Vector3(0, 0, 0);
-
-   
     public Vector3 targetPos = new Vector3(0, 1, 0);
 
     public float moveSpeed = 10;
@@ -19,6 +16,11 @@ public class PlayerController : MonoBehaviour
 
     public GameNode targetNode = null;
     public GameNode prevNode = null;
+
+    public int Health = 3;
+    public int maxHealth = 3;
+
+    public Vector3 startingPosition = new Vector3(0, 0, 0);
 
     public delegate void OnPositionChangeDelegate(int Row, int Col, NodeStatus Status);
     public OnPositionChangeDelegate OnPositionChange;
@@ -86,6 +88,11 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(MovePlayer());
         }
+    }
+
+    public void TakeDamage()
+    {
+
     }
 
     private IEnumerator MovePlayer()

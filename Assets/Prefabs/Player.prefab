@@ -221,10 +221,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPos: {x: 0, y: 0, z: 0}
   targetPos: {x: 0, y: 1, z: 0}
-  moveSpeed: 10
+  moveSpeed: 8
   playerInput: {fileID: 0}
   isMoving: 0
-  gridView: {fileID: 0}
   nodeLayer:
     serializedVersion: 2
     m_Bits: 64

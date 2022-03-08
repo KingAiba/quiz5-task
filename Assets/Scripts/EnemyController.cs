@@ -63,6 +63,10 @@ public class EnemyController : MonoBehaviour
 
     public void MovePosition()
     {
+        if(targetNode != null && targetNode.nodeStatus == NodeStatus.Safe)
+        {
+            PickDirection();
+        }
         if (!isMoving)
         {
             RayCastInDirection();

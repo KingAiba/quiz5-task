@@ -11,9 +11,14 @@ public class GameManager : MonoBehaviour
     public List<Node> playerPath = new List<Node>();
 
     public float percentComplete = 0;
+    public float winThreshold = 0.7f;
 
     public List<EnemyController> ghostList =  new List<EnemyController>();
 
+    public bool isWon = false;
+
+    public delegate void OnWinDelegate();
+    public OnWinDelegate OnWin;
 
     public void GetRequiredObjects()
     {
@@ -73,6 +78,14 @@ public class GameManager : MonoBehaviour
         UpdateFillPercent();
     }
 
+    public void CheckWin()
+    {
+        if(percentComplete > winThreshold)
+        {
+            OnWin?.Invoke();
+        }
+    }
+
     public void FindRegionToFill()
     {
         //Debug.Log(gameGridView.PrintMat());
@@ -86,7 +99,7 @@ public class GameManager : MonoBehaviour
             foreach(EnemyController ghost in ghostList)
             {
                 Node check = gameGridView.GetNodeFromGameGrid(ghost.targetNode.row, ghost.targetNode.col);
-                if(region.Contains(check))
+                if(region.Contains(check) || check == null)
                 {
                     isViableRegion = false;
                     break;
@@ -110,17 +123,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        GetRequiredObjects();
-        
+        GetRequiredObjects();      
     }
-
     
     void Update()
     {
+        CheckWin();
         if(levelLoaded == false)
         {
             InitLevel();
         }
+
+        
     }
 
 
