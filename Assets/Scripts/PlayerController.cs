@@ -18,8 +18,14 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask nodeLayer;
 
+    public GameNode targetNode = null;
+    public GameNode prevNode = null;
+
     public delegate void OnPositionChangeDelegate(int Row, int Col, NodeStatus Status);
     public OnPositionChangeDelegate OnPositionChange;
+
+    public delegate void OnSafeRegionReachedDelegate();
+    public OnSafeRegionReachedDelegate OnSafeRegionReached;
 
     void Start()
     {
@@ -46,13 +52,19 @@ public class PlayerController : MonoBehaviour
         Vector3 rayDir = pInput;
         RaycastHit hit;
 
-        if ( Physics.Raycast(transform.position + offsetPos, direction: rayDir, out hit, maxDistance: rayDistance, layerMask: nodeLayer))
+        if (Physics.Raycast(transform.position + offsetPos, direction: rayDir, out hit, maxDistance: rayDistance, layerMask: nodeLayer))
         {
-            GameNode targetNode = hit.collider.GetComponent<GameNode>();
+            prevNode = targetNode;
+            targetNode = hit.collider.GetComponent<GameNode>();
             if (targetNode != null || targetNode.nodeStatus != NodeStatus.None)
             {
                 targetPos = new Vector3(targetNode.transform.position.x, 1, targetNode.transform.position.z);
                 OnPositionChange?.Invoke(targetNode.row, targetNode.col, NodeStatus.Visited);
+
+                if((prevNode != null) && (prevNode.nodeStatus == NodeStatus.Visited && targetNode.nodeStatus == NodeStatus.Safe))
+                {
+                    OnSafeRegionReached?.Invoke();
+                }
             }
             //Debug.Log(targetPos);
             Debug.DrawRay(transform.position + offsetPos, rayDir * rayDistance, Color.red);

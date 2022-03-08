@@ -59,6 +59,11 @@ public class GameGridView : MonoBehaviour
 
     }
 
+    public string PrintMat()
+    {
+        return myGameGrid.PrintMat();
+    }
+
     public void ChangeNodeStatus(int Row, int Col, NodeStatus nodeStatus)
     {
         //Debug.Log("r:" + Row + "c:" + Col + "s" + nodeStatus);
@@ -70,6 +75,20 @@ public class GameGridView : MonoBehaviour
     public Node GetNodeFromGameGrid(int Row, int Col)
     {
         return myGameGrid.NodeMatrix[Row, Col];
+    }
+
+    public List<List<Node>> GetListOfRegions()
+    {
+        List<List<Node>> output = myGameGrid.FindAllEnclosedRegion();
+        return output;
+    }
+
+    public void FillRegion(List<Node> region)
+    {
+        foreach(Node node in region)
+        {
+            ChangeNodeStatus(node.row, node.col, NodeStatus.Safe);
+        }
     }
 
     private void Awake()

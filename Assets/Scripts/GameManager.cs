@@ -8,11 +8,14 @@ public class GameManager : MonoBehaviour
     public GameGridView gameGridView;
     public bool levelLoaded = false;
 
+    public List<Node> playerPath = new List<Node>();
+
     public void GetRequiredObjects()
     {
+
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
         playerController.OnPositionChange += ChangedPlayerPosition;
-
+        playerController.OnSafeRegionReached += FindRegionToFill;
         gameGridView = GameObject.Find("GridView").GetComponent<GameGridView>();
         //InitLevel();
 
@@ -21,6 +24,7 @@ public class GameManager : MonoBehaviour
     public void ChangedPlayerPosition(int Row, int Col, NodeStatus Status)
     {
         //Debug.Log("r:" + Row + "c:" + Col + "s" + Status);
+        playerPath.Add(gameGridView.GetNodeFromGameGrid(Row, Col));
         gameGridView.ChangeNodeStatus(Row, Col, Status);
     }
 
@@ -42,9 +46,25 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void FindLargestEnclosedRegion()
+    public void FindRegionToFill()
     {
+        Debug.Log(gameGridView.PrintMat());
+        List<List<Node>> regions = gameGridView.GetListOfRegions();
+        List<Node> smallestRegion = null;
+        int minCount = int.MaxValue;
+        foreach(List<Node> region in regions)
+        {
+            if(region.Count < minCount)
+            {
+                minCount = region.Count;
+                smallestRegion = region;
+            }
+        }
 
+        gameGridView.FillRegion(smallestRegion);
+        gameGridView.FillRegion(playerPath);
+
+        playerPath.Clear();
     }
 
     private void Awake()
