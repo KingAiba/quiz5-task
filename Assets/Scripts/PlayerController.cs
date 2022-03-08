@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
 
     public LayerMask nodeLayer;
 
-    public delegate void OnPositionChangeDelegate();
+    public delegate void OnPositionChangeDelegate(int Row, int Col, NodeStatus Status);
     public OnPositionChangeDelegate OnPositionChange;
 
     void Start()
@@ -49,12 +49,12 @@ public class PlayerController : MonoBehaviour
         if ( Physics.Raycast(transform.position + offsetPos, direction: rayDir, out hit, maxDistance: rayDistance, layerMask: nodeLayer))
         {
             GameNode targetNode = hit.collider.GetComponent<GameNode>();
-            if (targetNode != null)
+            if (targetNode != null || targetNode.nodeStatus != NodeStatus.None)
             {
                 targetPos = new Vector3(targetNode.transform.position.x, 1, targetNode.transform.position.z);
-                OnPositionChange?.Invoke();
+                OnPositionChange?.Invoke(targetNode.row, targetNode.col, NodeStatus.Visited);
             }
-            Debug.Log(targetPos);
+            //Debug.Log(targetPos);
             Debug.DrawRay(transform.position + offsetPos, rayDir * rayDistance, Color.red);
 
         }

@@ -15,7 +15,7 @@ public class GameGridView : MonoBehaviour
 
     GameGrid myGameGrid;
 
-
+    List<GameNode> gameNodeList = new List<GameNode>();
 
     public void InitializeGridView()
     {
@@ -29,6 +29,22 @@ public class GameGridView : MonoBehaviour
 
         GameNode gameNode = newNode.GetComponent<GameNode>();
         gameNode.InitGameNode(row, col);
+
+        Node matNode = myGameGrid.NodeMatrix[row, col];
+
+        matNode.OnStatusChange += gameNode.SetStatus;
+
+
+        gameNodeList.Add(gameNode);
+    }
+
+    public void DestroyGameGridView()
+    {
+        foreach(GameNode gn in gameNodeList)
+        {
+            Node matNode = myGameGrid.NodeMatrix[gn.row, gn.col];
+            matNode.OnStatusChange -= gn.SetStatus;
+        }
     }
 
     public void DrawGrid()
@@ -43,10 +59,27 @@ public class GameGridView : MonoBehaviour
 
     }
 
+    public void ChangeNodeStatus(int Row, int Col, NodeStatus nodeStatus)
+    {
+        //Debug.Log("r:" + Row + "c:" + Col + "s" + nodeStatus);
+
+        myGameGrid.ChangeStatus(Row, Col, nodeStatus);
+        //Debug.Log(myGameGrid.PrintMat());
+    }
+
+    public Node GetNodeFromGameGrid(int Row, int Col)
+    {
+        return myGameGrid.NodeMatrix[Row, Col];
+    }
+
+    private void Awake()
+    {
+        InitializeGridView();
+    }
 
     void Start()
     {
-        InitializeGridView();
+        
         DrawGrid();
     }
 
@@ -54,5 +87,10 @@ public class GameGridView : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnDestroy()
+    {
+        DestroyGameGridView();
     }
 }

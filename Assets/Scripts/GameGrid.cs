@@ -6,6 +6,10 @@ public class GameGrid : Matrix
 {
     public Node[,] NodeMatrix;
 
+    public delegate void StatusChangeDelegate(int Row, int Col, NodeStatus Status);
+    public StatusChangeDelegate StatusChange;
+
+
     public GameGrid(int Rows, int Cols) : base(Rows, Cols)
     {
         InitializeNodeMatrix();
@@ -25,6 +29,16 @@ public class GameGrid : Matrix
             {
                 NodeMatrix[i, j] = new Node(i, j);
             }
+        }
+    }
+
+    public void ChangeStatus(int Row, int Col, NodeStatus Status)
+    {
+        if(mat[Row, Col] != (int)NodeStatus.Safe)
+        {
+            NodeMatrix[Row, Col].SetStatus(Status);
+            mat[Row, Col] = (int)Status;
+            StatusChange?.Invoke(Row, Col, Status);
         }
     }
 }
