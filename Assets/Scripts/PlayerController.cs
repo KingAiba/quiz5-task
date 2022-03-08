@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
     public int Health = 3;
     public int maxHealth = 3;
 
-    public Vector3 startingPosition = new Vector3(0, 0, 0);
+    public bool isDead = false;
+
+    public Vector3 startingPosition = new Vector3(0, 1, 0);
 
     public delegate void OnPositionChangeDelegate(int Row, int Col, NodeStatus Status);
     public OnPositionChangeDelegate OnPositionChange;
@@ -90,9 +92,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TakeDamage()
+    private void BackToSpawn()
     {
+        transform.position = startingPosition;
+        targetPos = startingPosition;
+        targetNode = null;
+        prevNode = null;
+    }
 
+    public void TakeDamage(int dmg)
+    {
+        Health -= dmg;
+        BackToSpawn();
+        if(Health >= 0)
+        {
+            isDead = true;
+        }
     }
 
     private IEnumerator MovePlayer()

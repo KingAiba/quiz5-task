@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 722171378902282343}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,7 +219,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535872b61128d3e448a1593e94346057, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridPos: {x: 0, y: 0, z: 0}
   targetPos: {x: 0, y: 1, z: 0}
   moveSpeed: 8
   playerInput: {fileID: 0}
@@ -229,3 +228,6 @@ MonoBehaviour:
     m_Bits: 64
   targetNode: {fileID: 0}
   prevNode: {fileID: 0}
+  Health: 3
+  maxHealth: 3
+  startingPosition: {x: 0, y: 0, z: 0}

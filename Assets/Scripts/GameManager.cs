@@ -132,9 +132,7 @@ public class GameManager : MonoBehaviour
         if(levelLoaded == false)
         {
             InitLevel();
-        }
-
-        
+        }       
     }
 
 

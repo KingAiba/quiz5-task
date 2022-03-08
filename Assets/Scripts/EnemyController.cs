@@ -17,6 +17,9 @@ public class EnemyController : MonoBehaviour
     public GameNode targetNode = null;
     public GameNode prevNode = null;
 
+    public delegate void OnEnterVisitedDelegate();
+    public OnEnterVisitedDelegate OnEnterVisited;
+
     void Start()
     {
         PickDirection();
@@ -50,6 +53,10 @@ public class EnemyController : MonoBehaviour
             else
             {
                 targetPos = new Vector3(targetNode.transform.position.x, 1, targetNode.transform.position.z);
+                if(targetNode.nodeStatus == NodeStatus.Visited)
+                {
+                    OnEnterVisited?.Invoke();
+                }
             }
             //Debug.Log(targetPos);
             Debug.DrawRay(transform.position + offsetPos, rayDir * rayDistance, Color.cyan);
@@ -85,9 +92,11 @@ public class EnemyController : MonoBehaviour
         isMoving = false;
     }
 
-    private IEnumerator PickNewDirection()
+    private void OnTriggerEnter(Collider other)
     {
-
-        yield return null;
+        if(other.CompareTag("Player"))
+        {
+            other.gameObject.GetComponent<PlayerController>().TakeDamage(1);
+        }
     }
 }

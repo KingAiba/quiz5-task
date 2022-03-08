@@ -9,6 +9,7 @@ public class GameUIScript : MonoBehaviour
 
     public TextMeshProUGUI percentText;
     public TextMeshProUGUI winText;
+    public TextMeshProUGUI hpText;
 
     private GameManager gameManager;
     
@@ -21,11 +22,17 @@ public class GameUIScript : MonoBehaviour
     void Update()
     {
         SetPercentText();
+        SetHPext();
     }
 
     public void SetPercentText()
     {
         percentText.SetText("" + gameManager.percentComplete*100 + "%");
+    }
+
+    public void SetHPext()
+    {
+        hpText.SetText("" + gameManager.playerController.Health + "/" + gameManager.playerController.maxHealth);
     }
 
     public void EnableWinText()
