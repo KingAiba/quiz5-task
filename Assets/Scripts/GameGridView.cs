@@ -22,6 +22,11 @@ public class GameGridView : MonoBehaviour
         myGameGrid = new GameGrid(gridRows, gridCols);
     }
 
+    public List<GameNode> GetListOfNodes()
+    {
+        return gameNodeList;
+    }
+
     public void CreateGameNode(int row, int col)
     {
         GameObject newNode = Instantiate(nodePrefab, new Vector3(row * nodeSpacing, 0, col * nodeSpacing), nodePrefab.transform.rotation);
@@ -85,10 +90,14 @@ public class GameGridView : MonoBehaviour
 
     public void FillRegion(List<Node> region)
     {
-        foreach(Node node in region)
+        if(region != null)
         {
-            ChangeNodeStatus(node.row, node.col, NodeStatus.Safe);
+            foreach (Node node in region)
+            {
+                ChangeNodeStatus(node.row, node.col, NodeStatus.Safe);
+            }
         }
+
     }
 
     private void Awake()

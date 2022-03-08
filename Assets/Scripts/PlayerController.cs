@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     public InputManager playerInput;
     public bool isMoving = false;
 
-    public GameGridView gridView;
 
     public LayerMask nodeLayer;
 

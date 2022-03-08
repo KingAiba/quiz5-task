@@ -10,6 +10,11 @@ public class GameManager : MonoBehaviour
 
     public List<Node> playerPath = new List<Node>();
 
+    public float percentComplete = 0;
+
+    public List<EnemyController> ghostList =  new List<EnemyController>();
+
+
     public void GetRequiredObjects()
     {
 
@@ -17,6 +22,12 @@ public class GameManager : MonoBehaviour
         playerController.OnPositionChange += ChangedPlayerPosition;
         playerController.OnSafeRegionReached += FindRegionToFill;
         gameGridView = GameObject.Find("GridView").GetComponent<GameGridView>();
+
+        GameObject[] temp = GameObject.FindGameObjectsWithTag("Ghost");
+        foreach(GameObject ghost in temp)
+        {
+            ghostList.Add(ghost.GetComponent<EnemyController>());
+        }
         //InitLevel();
 
     }
@@ -26,6 +37,22 @@ public class GameManager : MonoBehaviour
         //Debug.Log("r:" + Row + "c:" + Col + "s" + Status);
         playerPath.Add(gameGridView.GetNodeFromGameGrid(Row, Col));
         gameGridView.ChangeNodeStatus(Row, Col, Status);
+    }
+
+    public void UpdateFillPercent()
+    {
+        float counter = 0;
+        float totalNodes = gameGridView.gridRows * gameGridView.gridCols;
+        List<GameNode> temp = gameGridView.GetListOfNodes();
+        foreach(GameNode node in temp)
+        {
+            if(node.nodeStatus == NodeStatus.Safe)
+            {
+                counter++;
+            }
+        }
+
+        percentComplete = counter/totalNodes;
     }
 
     public void InitLevel()
@@ -43,18 +70,31 @@ public class GameManager : MonoBehaviour
         }
 
         levelLoaded = true;
-
+        UpdateFillPercent();
     }
 
     public void FindRegionToFill()
     {
-        Debug.Log(gameGridView.PrintMat());
+        //Debug.Log(gameGridView.PrintMat());
         List<List<Node>> regions = gameGridView.GetListOfRegions();
         List<Node> smallestRegion = null;
         int minCount = int.MaxValue;
         foreach(List<Node> region in regions)
         {
-            if(region.Count < minCount)
+            bool isViableRegion = true;
+
+            foreach(EnemyController ghost in ghostList)
+            {
+                Node check = gameGridView.GetNodeFromGameGrid(ghost.targetNode.row, ghost.targetNode.col);
+                if(region.Contains(check))
+                {
+                    isViableRegion = false;
+                    break;
+                    
+                }
+            }
+
+            if(isViableRegion && region.Count < minCount)
             {
                 minCount = region.Count;
                 smallestRegion = region;
@@ -65,11 +105,7 @@ public class GameManager : MonoBehaviour
         gameGridView.FillRegion(playerPath);
 
         playerPath.Clear();
-    }
-
-    private void Awake()
-    {
-        
+        UpdateFillPercent();
     }
 
     void Start()
