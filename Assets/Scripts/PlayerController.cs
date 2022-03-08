@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     public Vector3 gridPos = new Vector3(0, 0, 0);
 
-    public Vector3 prevPos = new Vector3(0, 0, 0);
+   
     public Vector3 targetPos = new Vector3(0, 1, 0);
 
     public float moveSpeed = 10;
@@ -15,67 +14,53 @@ public class PlayerController : MonoBehaviour
     public InputManager playerInput;
     public bool isMoving = false;
 
-    //public PlayerGrid gridManager;
+    public GameGridView gridView;
 
     public LayerMask nodeLayer;
+
+    public delegate void OnPositionChangeDelegate();
+    public OnPositionChangeDelegate OnPositionChange;
 
     void Start()
     {
         playerInput = GetComponent<InputManager>();
-        //gridManager = GameObject.Find("GridObject").GetComponent<PlayerGrid>();
+        
     }
 
     
     void Update()
     {
-        MovePos();
         RotateTowardsTarget();
-        //MovePlayer();
+        MovePosition();
     }
 
     private void FixedUpdate()
     {
-        //ShootRayOnInput(playerInput.inputVector);
+        ShootRayOnInput(playerInput.inputVector);
     }
 
-/*    private void ShootRayOnInput(Vector3 pInput)
+    private void ShootRayOnInput(Vector3 pInput)
     {
+        float rayDistance = 2f;
         Vector3 offsetPos = new Vector3(0, -0.5f, 0);
         Vector3 rayDir = pInput;
         RaycastHit hit;
 
-        if (!isMoving && Physics.Raycast(transform.position + offsetPos, direction: rayDir, out hit, maxDistance: 2f, layerMask: nodeLayer))
+        if ( Physics.Raycast(transform.position + offsetPos, direction: rayDir, out hit, maxDistance: rayDistance, layerMask: nodeLayer))
         {
-            Node targetNode = hit.collider.GetComponent<Node>();
+            GameNode targetNode = hit.collider.GetComponent<GameNode>();
             if (targetNode != null)
             {
-                targetPos = new Vector3(targetNode.worldPosition.x, 1, targetNode.worldPosition.z);
+                targetPos = new Vector3(targetNode.transform.position.x, 1, targetNode.transform.position.z);
+                OnPositionChange?.Invoke();
             }
-            //Debug.Log(hit.collider.GetComponent<Node>().nodePosition);
-            Debug.DrawRay(transform.position + offsetPos, rayDir * 2f, Color.red);
+            Debug.Log(targetPos);
+            Debug.DrawRay(transform.position + offsetPos, rayDir * rayDistance, Color.red);
 
         }
         else
         {
-            Debug.DrawRay(transform.position + offsetPos, rayDir * 2f, Color.yellow);          
-        }
-    }*/
-
-    private void MovePos()
-    {
-/*        if((gridPos.x + playerInput.inputVector.x < gridManager.gridSize.x && gridPos.z + playerInput.inputVector.z < gridManager.gridSize.y)
-            && (gridPos.x + playerInput.inputVector.x >= 0 && gridPos.z + playerInput.inputVector.z >= 0)
-            && !isMoving)
-        {
-            gridPos += playerInput.inputVector;
-            targetPos = gridManager.GetNodeWorldPos(gridPos);
-            targetPos = new Vector3(targetPos.x, 1, targetPos.z);
-            StartCoroutine(MovePlayer());
-            
-        }*/
-        if(!isMoving)
-        {
-            StartCoroutine(MovePlayer());
+            Debug.DrawRay(transform.position + offsetPos, rayDir * rayDistance, Color.yellow);
         }
     }
 
@@ -84,10 +69,17 @@ public class PlayerController : MonoBehaviour
         transform.LookAt(targetPos, Vector3.up);
     }
 
+    public void MovePosition()
+    {
+        if(!isMoving)
+        {
+            StartCoroutine(MovePlayer());
+        }
+    }
+
     private IEnumerator MovePlayer()
     {
-        isMoving = true;
-        prevPos = transform.position;
+        isMoving = true; 
         while(transform.position != targetPos)
         {
             transform.position = Vector3.Lerp(transform.position, targetPos, moveSpeed * Time.deltaTime);

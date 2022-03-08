@@ -2,17 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameGrid : MonoBehaviour
+public class GameGrid : Matrix
 {
-    // Start is called before the first frame update
-    void Start()
+    public Node[,] NodeMatrix;
+
+    public GameGrid(int Rows, int Cols) : base(Rows, Cols)
     {
-        
+        InitializeNodeMatrix();
     }
 
-    // Update is called once per frame
-    void Update()
+    public GameGrid(int[,] Arr) : base(Arr)
     {
-        
+        InitializeNodeMatrix();
+    }
+
+    public void InitializeNodeMatrix()
+    {
+        NodeMatrix = new Node[rows, cols];
+        for(int i = 0; i<rows; i++)
+        {
+            for(int j=0; j<cols;j++)
+            {
+                NodeMatrix[i, j] = new Node(i, j);
+            }
+        }
     }
 }

@@ -12,11 +12,13 @@ public enum NodeStatus
 
 public class Node : MonoBehaviour
 {
-    public Vector3 nodePosition;
+    public int row;
+    public int col;
     public NodeStatus nodeStatus = NodeStatus.None;
 
-    public Node(Vector3 pos)
+    public Node(int Row, int Col)
     {
-        nodePosition = pos;
+        row = Row;
+        col = Col;
     }
 }
